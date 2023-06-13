@@ -175,6 +175,7 @@ def usage() :
     print ("        -c                   -- Print Copyright License and maintenance URL.")
     print ("        -v                   -- Print program Version")
     print ("        -h, --help           -- Print this help")
+    print ("        -s                   -- Highlight special liveries for Departures and Arrivals")
     print ("\n")
     print (red(" --- IMPORTANT! -----------------------------------------------"))
     print ("   \u2022 All times shown are in the timezone of your computer!")
@@ -287,6 +288,7 @@ else :
         #elif opt == "-t": loctz = True;                        # Show all results in local airport TimeZone
         elif opt == "-x":                                       # Show flights between 2 airports <iata-1> <iata-2>
            query = 6; airport = arg; airport2 = args[0].upper();
+        elif opt == "-s": query = 7; airport = arg;
 
 if not airport and not country : airport = args[0];
 
@@ -475,6 +477,11 @@ if query == 2 :
             airlinN = "---"
         else :
             airlinN = aL['flight']['airline']['name']                           # Nordica
+
+        
+        
+        
+        
         
         #airlinI = aL['flight']['airline']['code']['icao']                      # EST
         status  = aL['flight']['status']['text']                                # "scheduled"
@@ -485,6 +492,7 @@ if query == 2 :
         if re.match( r'[Cc]anceled', status ) : status = red(status);
         #re.sub( r'([Dd]elayed)', yellow(group(1)), status, 1)
         airline = airlinN[:24].ljust(24,' ')
+        if '(' in airline : airline = green(airline);
 
         FLine = ("%s\t %s\t %s\t %s\t %s\t %s\t %s"% (callsig, flight1, goingto, hs(timeS), hs(timeE), airline, status) )
         print (FLine)
@@ -721,10 +729,16 @@ if query == 6 :
         if re.match( r'[Ll]anded', status ) : status = green(status);
         #re.sub( r'([Dd]elayed)', yellow(group(1)), status, 1)
 
+        if re.match(r'(', status) : status = red(status);
+
         #headers = ('ID', 'Flight', 'Scheduled', 'ETD', 'Airline', 'Aircraft', 'Status')
         FLine   = ('{:<8}  {:<8} {:<16}  {:<5}  {:<24} {:<20} {:<19}'.format(callsig, flight1, hd(timeS), hs(timeE), airline, aircraft, status) ) # changed from hs() to hd()
 
         print (FLine)
+
+
+#if query == 7:
+    
 
 
 #------------------------------------------------
